@@ -20,6 +20,7 @@ import static org.mockito.BDDMockito.given;
 class RestaurantServiceTests {
 
     private RestaurantService restaurantService;
+    // 자바 객체만 사용할 때 @Mock
     @Mock
     private RestaurantRepository restaurantRepository;
     @Mock
@@ -47,7 +48,7 @@ class RestaurantServiceTests {
         menuItems.add(new MenuItem("kimchi"));
         given(menuItemRepository.findAllByRestaurantId(1004L)).willReturn(menuItems);
     }
-    
+
     @Test
     public void getRestaurant(){
         Restaurant restaurant = restaurantService.getRestaurant(1004L);
