@@ -9,12 +9,16 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 class RestaurantServiceTests {
@@ -40,7 +44,7 @@ class RestaurantServiceTests {
         Restaurant restaurant = new Restaurant(1004L, "bob zip", "seoul");
         restaurants.add(restaurant);
         given(restaurantRepository.findAll()).willReturn(restaurants);
-        given(restaurantRepository.findById(1004L)).willReturn(restaurant);
+        given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
     }
 
     private void mockMenuItemRepository() {
@@ -62,6 +66,15 @@ class RestaurantServiceTests {
         Restaurant restaurant = restaurants.get(0);
         assertThat(restaurant.getId()).isEqualTo(1004L);
     }
+
+    @Test
+    public void addRestaurant(){
+        Restaurant restaurant = new Restaurant("br", "seoul");
+        given(restaurantRepository.save(any())).willReturn(restaurant);
+        Restaurant created = restaurantService.addRestaurant(restaurant);
+        //assertThat(created.getId()).isEqualTo(1234L);
+    }
+
 
 
 }

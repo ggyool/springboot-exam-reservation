@@ -1,13 +1,27 @@
 package org.ggyool.eatgo.domain;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Restaurant {
-    private final Long id;
-    private final String name;
-    private final String address;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String address;
+    @Transient // db에 저장 하지 않도록
     private List<MenuItem> menuItems = new ArrayList<>();
+
+    public Restaurant() {
+    }
+
+    public Restaurant(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
     public Restaurant(Long id, String name, String address) {
         this.id = id;
         this.name = name;
@@ -39,5 +53,8 @@ public class Restaurant {
         for(MenuItem menuItem : menuItems){
             addMenuItem(menuItem);
         }
+    }
+
+    public void addRestaurant(Restaurant restaurant) {
     }
 }
