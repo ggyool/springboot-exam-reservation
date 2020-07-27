@@ -8,7 +8,11 @@ import static org.hamcrest.Matchers.is;
 class RestaurantTests {
     @Test
     public void creation(){
-        Restaurant restaurant = new Restaurant(1004L,"bob zip", "seoul");
+        Restaurant restaurant = Restaurant.builder()
+                .id(1004L)
+                .name("bob zip")
+                .address("seoul")
+                .build();
         assertThat(restaurant.getId()).isEqualTo(1004);
         assertThat(restaurant.getName()).isEqualTo("bob zip");
         assertThat(restaurant.getAddress()).isEqualTo("seoul");
@@ -16,7 +20,11 @@ class RestaurantTests {
 
     @Test
     public void information(){
-        Restaurant restaurant = new Restaurant(1004L,"bob zip", "seoul");
+        Restaurant restaurant = Restaurant.builder()
+                .id(1004L)
+                .name("bob zip")
+                .address("seoul")
+                .build();
         assertThat(restaurant.getInformation()).isEqualTo("bob zip in seoul");
     }
 

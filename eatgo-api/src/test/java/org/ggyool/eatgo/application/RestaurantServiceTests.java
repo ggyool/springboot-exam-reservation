@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +42,12 @@ class RestaurantServiceTests {
 
     public void mockRestaurantRepository(){
         List<Restaurant> restaurants = new ArrayList<>();
-        Restaurant restaurant = new Restaurant(1004L, "bob zip", "seoul");
+        Restaurant restaurant = Restaurant.builder()
+                .id(1004L)
+                .name("bob zip")
+                .address("seoul")
+                .menuItems(new ArrayList<>())
+                .build();
         restaurants.add(restaurant);
         given(restaurantRepository.findAll()).willReturn(restaurants);
         given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
@@ -49,7 +55,7 @@ class RestaurantServiceTests {
 
     private void mockMenuItemRepository() {
         List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("kimchi"));
+        menuItems.add(MenuItem.builder().name("kimchi").build());
         given(menuItemRepository.findAllByRestaurantId(1004L)).willReturn(menuItems);
     }
 
@@ -61,19 +67,53 @@ class RestaurantServiceTests {
         assertThat(menuItem.getName()).isEqualTo("kimchi");
     }
     @Test
-    public void getRestaurants(){
+    public void getRestaurantsWithExisted(){
         List<Restaurant> restaurants = restaurantService.getRestaurants();
         Restaurant restaurant = restaurants.get(0);
         assertThat(restaurant.getId()).isEqualTo(1004L);
     }
 
+    // junit5 에서는 expected x
+    @Test
+    public void getRestaurantsWithNotExisted(){
+        assertThatThrownBy(()->{restaurantService.getRestaurant(404L);})
+                .isInstanceOf(RestaurantNotFoundException.class);
+    }
+
     @Test
     public void addRestaurant(){
-        Restaurant restaurant = new Restaurant("br", "seoul");
-        given(restaurantRepository.save(any())).willReturn(restaurant);
+        given(restaurantRepository.save(any())).will(invocation->{
+            Restaurant restaurant = invocation.getArgument(0);
+            return Restaurant.builder()
+                    .id(1234L)
+                    .name(restaurant.getName())
+                    .address(restaurant.getAddress())
+                    .build();
+        });
+        Restaurant restaurant = Restaurant.builder()
+                .id(1234L)
+                .name("bob zip")
+                .address("seoul")
+                .build();
+
         Restaurant created = restaurantService.addRestaurant(restaurant);
-        //assertThat(created.getId()).isEqualTo(1234L);
+        assertThat(created.getId()).isEqualTo(1234L);
     }
+
+    @Test
+    public void updateRestaurant(){
+        Restaurant restaurant = Restaurant.builder()
+                .id(1004L)
+                .name("bob zip")
+                .address("seoul")
+                .build();
+        given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
+        Restaurant updated = restaurantService.updateRestaurant(1004L, "bab zip", "busan");
+        assertThat(restaurant.getName()).isEqualTo("bab zip");
+        assertThat(restaurant.getAddress()).isEqualTo("busan");
+        assertThat(restaurant).isEqualTo(updated);
+    }
+
 
 
 

@@ -1,49 +1,39 @@
 package org.ggyool.eatgo.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 @Entity
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String address;
     @Transient // db에 저장 하지 않도록
     private List<MenuItem> menuItems = new ArrayList<>();
 
-    public Restaurant() {
-    }
 
-    public Restaurant(String name, String address) {
+    public void updateInformation(String name, String address){
         this.name = name;
         this.address = address;
-    }
-
-    public Restaurant(Long id, String name, String address) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-    }
-
-    public Long getId() {
-        return id;
-    }
-    public String getName() {
-        return name;
-    }
-    public String getAddress() {
-        return address;
     }
 
     public String getInformation() {
         return name + " in " + address;
-    }
-
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
     }
 
     public void addMenuItem(MenuItem menuItem) {
@@ -55,6 +45,4 @@ public class Restaurant {
         }
     }
 
-    public void addRestaurant(Restaurant restaurant) {
-    }
 }
