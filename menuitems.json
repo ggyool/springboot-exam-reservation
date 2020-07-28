@@ -1,8 +1,11 @@
 [
   {
-    "name": "kimchi"
+    "id" : 1,
+    "name": "modi kimchi"
   },
   {
-    "name": "gukbob"
+    "id" : 2,
+    "name": "gukbob",
+    "destroy" : true
   }
 ]
