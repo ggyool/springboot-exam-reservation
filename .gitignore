@@ -1,14 +1,11 @@
 # Project exclude paths
 /.gradle/
-/eatgo-api/build/
-/eatgo-api/build/classes/java/main/
-/eatgo-api/build/classes/java/test/
 .idea/modules/
-eatgo-admin-api/build/
-eatgo-admin-api/src/main/resources/static/
-eatgo-admin-api/src/main/resources/templates/
-eatgo-admin-api/src/test/resources/
-eatgo-common/build/
-eatgo-common/src/main/resources/
-eatgo-common/src/test/resources/
+/eatgo-admin-api/build/
+/eatgo-admin-api/src/main/resources/static/
+/eatgo-admin-api/src/main/resources/templates/
+/eatgo-admin-api/src/test/resources/
+/eatgo-common/build/
+/eatgo-common/src/main/resources/
+/eatgo-common/src/test/resources/
 src/
