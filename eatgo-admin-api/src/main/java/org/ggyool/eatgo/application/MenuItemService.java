@@ -38,4 +38,8 @@ public class MenuItemService {
                 .build()
         );
     }
+
+    public List<MenuItem> getMenuItems(Long restaurantId) {
+        return menuItemRepository.findAllByRestaurantId(restaurantId);
+    }
 }

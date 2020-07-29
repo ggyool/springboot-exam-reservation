@@ -7,11 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 class ReviewServiceTests {
 
@@ -26,15 +23,17 @@ class ReviewServiceTests {
         reviewService = new ReviewService(reviewRepository);
     }
 
+
     @Test
-    public void getReviews(){
-        List<Review> mockReviews = new ArrayList<>();
-        mockReviews.add(Review.builder().description("delicious!").build());
-        given(reviewRepository.findAll()).willReturn(mockReviews);
+    public void addReview(){
+        Review review = Review.builder()
+                    .name("ggyool")
+                    .score(5)
+                    .description("delicious!")
+                    .build();
+        reviewService.addReview(1004L, review);
 
-        List<Review> reviews = reviewService.getReviews();
-        assertThat(reviews.get(0).getDescription()).isEqualTo("delicious!");
-
+        verify(reviewRepository).save(any());
     }
 
 

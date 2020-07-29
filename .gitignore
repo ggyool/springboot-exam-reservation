@@ -5,7 +5,12 @@
 /eatgo-admin-api/src/main/resources/static/
 /eatgo-admin-api/src/main/resources/templates/
 /eatgo-admin-api/src/test/resources/
+/eatgo-customer-api/build/
+/eatgo-customer-api/src/main/resources/static/
+/eatgo-customer-api/src/main/resources/templates/
+/eatgo-customer-api/src/test/resources/
 /eatgo-common/build/
 /eatgo-common/src/main/resources/
 /eatgo-common/src/test/resources/
-
+application.yml
+application.properties

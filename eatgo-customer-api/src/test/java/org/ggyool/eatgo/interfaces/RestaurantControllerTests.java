@@ -1,8 +1,10 @@
 package org.ggyool.eatgo.interfaces;
 
 import org.ggyool.eatgo.application.RestaurantService;
+import org.ggyool.eatgo.domain.MenuItem;
 import org.ggyool.eatgo.domain.Restaurant;
 import org.ggyool.eatgo.domain.RestaurantNotFoundException;
+import org.ggyool.eatgo.domain.Review;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -55,6 +58,8 @@ class RestaurantControllerTests {
                 .id(1004L)
                 .name("bob zip")
                 .address("seoul")
+                .menuItems(new ArrayList<>(Arrays.asList(MenuItem.builder().name("kimchi").build())))
+                .reviews(new ArrayList<>(Arrays.asList(Review.builder().name("ggyool").score(5).description("delicious!").build())))
                 .build();
 
         given(restaurantService.getRestaurant(1004L)).willReturn(restaurant);
@@ -66,7 +71,14 @@ class RestaurantControllerTests {
                 .andExpect(content().string(
                         containsString("\"id\":1004")))
                 .andExpect(content().string(
-                        containsString("\"name\":\"bob zip\"")));
+                        containsString("\"name\":\"bob zip\"")))
+                .andExpect(content().string(
+                        containsString("kimchi")
+                ))
+                .andExpect(content().string(
+                        containsString("delicious")
+                ));
+
     }
 
     @Test
@@ -76,50 +88,6 @@ class RestaurantControllerTests {
         mvc.perform(get("/restaurants/404"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("{}"));
-    }
-
-    @Test
-    public void createWithValidData() throws Exception {
-
-        given(restaurantService.addRestaurant(any())).will(invocation -> {
-           Restaurant restaurant = invocation.getArgument(0);
-           return Restaurant.builder()
-                   .id(1234L)
-                   .name(restaurant.getName())
-                   .address(restaurant.getAddress())
-                   .build();
-        });
-        mvc.perform(post("/restaurants")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"br\", \"address\":\"seoul\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/restaurants/1234"))
-                .andExpect(content().string("{}"));
-        verify(restaurantService).addRestaurant(any());
-    }
-
-    @Test
-    public void createWithInvalidData() throws Exception {
-        mvc.perform(post("/restaurants")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"\", \"address\":\"\"}"))
-                .andExpect(status().isBadRequest());
-    }
-    @Test
-    public void updateWithValidData() throws Exception {
-        mvc.perform(patch("/restaurants/1004")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"bob zip\", \"address\":\"busan\"}"))
-                .andExpect(status().isOk());
-
-        verify(restaurantService).updateRestaurant(1004L, "bob zip", "busan");
-    }
-    @Test
-    public void updateWithInvalidData() throws Exception {
-        mvc.perform(patch("/restaurants/1004")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"\", \"address\":\"\"}"))
-                .andExpect(status().isBadRequest());
     }
 
 }

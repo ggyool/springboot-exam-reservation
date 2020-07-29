@@ -1,8 +1,6 @@
 package org.ggyool.eatgo.application;
 
-import org.ggyool.eatgo.domain.Restaurant;
-import org.ggyool.eatgo.domain.RestaurantNotFoundException;
-import org.ggyool.eatgo.domain.RestaurantRepository;
+import org.ggyool.eatgo.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,7 +13,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 class RestaurantServiceTests {
 
@@ -23,13 +23,19 @@ class RestaurantServiceTests {
     // 자바 객체만 사용할 때 @Mock
     @Mock
     private RestaurantRepository restaurantRepository;
+    @Mock
+    private MenuItemRepository menuItemRepository;
+    @Mock
+    private ReviewRepository reviewRepository;
 
     // junit5의 Before
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.initMocks(this);
         mockRestaurantRepository();
-        restaurantService = new RestaurantService(restaurantRepository);
+        mockMenuItemRepository();
+        mockReviewRepository();
+        restaurantService = new RestaurantService(restaurantRepository, menuItemRepository, reviewRepository);
     }
 
 
@@ -47,12 +53,30 @@ class RestaurantServiceTests {
         given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
     }
 
+    private void mockMenuItemRepository() {
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(MenuItem.builder().name("kimchi").build());
+        given(menuItemRepository.findAllByRestaurantId(1004L)).willReturn(menuItems);
+    }
+
+    private void mockReviewRepository() {
+        List<Review> reviews = new ArrayList<>();
+        reviews.add(Review.builder().name("ggyool").score(5).description("delicious!").build());
+        given(reviewRepository.findAllByRestaurantId(1004L)).willReturn(reviews);
+    }
 
     @Test
     public void getRestaurantWithExisted(){
         Restaurant restaurant = restaurantService.getRestaurant(1004L);
 
+        verify(menuItemRepository).findAllByRestaurantId(eq(1004L));
+        verify(reviewRepository).findAllByRestaurantId(eq(1004L));
+        MenuItem menuItem = restaurant.getMenuItems().get(0);
         assertThat(restaurant.getId()).isEqualTo(1004L);
+        assertThat(menuItem.getName()).isEqualTo("kimchi");
+
+        Review review = restaurant.getReviews().get(0);
+        assertThat(review.getDescription()).isEqualTo("delicious!");
     }
 
     @Test
@@ -68,42 +92,5 @@ class RestaurantServiceTests {
         assertThatThrownBy(()->{restaurantService.getRestaurant(404L);})
                 .isInstanceOf(RestaurantNotFoundException.class);
     }
-
-    @Test
-    public void addRestaurant(){
-        given(restaurantRepository.save(any())).will(invocation->{
-            Restaurant restaurant = invocation.getArgument(0);
-            return Restaurant.builder()
-                    .id(1234L)
-                    .name(restaurant.getName())
-                    .address(restaurant.getAddress())
-                    .build();
-        });
-        Restaurant restaurant = Restaurant.builder()
-                .id(1234L)
-                .name("bob zip")
-                .address("seoul")
-                .build();
-
-        Restaurant created = restaurantService.addRestaurant(restaurant);
-        assertThat(created.getId()).isEqualTo(1234L);
-    }
-
-    @Test
-    public void updateRestaurant(){
-        Restaurant restaurant = Restaurant.builder()
-                .id(1004L)
-                .name("bob zip")
-                .address("seoul")
-                .build();
-        given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
-        Restaurant updated = restaurantService.updateRestaurant(1004L, "bab zip", "busan");
-        assertThat(restaurant.getName()).isEqualTo("bab zip");
-        assertThat(restaurant.getAddress()).isEqualTo("busan");
-        assertThat(restaurant).isEqualTo(updated);
-    }
-
-
-
 
 }

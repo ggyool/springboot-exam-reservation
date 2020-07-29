@@ -1,11 +1,8 @@
 [
   {
-    "id" : 1,
-    "name": "modi kimchi"
+    "name": "egg"
   },
   {
-    "id" : 2,
-    "name": "gukbob",
-    "destroy" : true
+    "name": "bread"
   }
 ]

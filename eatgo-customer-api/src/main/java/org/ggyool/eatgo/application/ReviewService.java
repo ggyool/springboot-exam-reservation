@@ -5,8 +5,6 @@ import org.ggyool.eatgo.domain.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ReviewService {
 
@@ -18,7 +16,14 @@ public class ReviewService {
     }
 
 
-    public List<Review> getReviews() {
-        return reviewRepository.findAll();
+    public Review addReview(Long restaurantid, Review review){
+        return reviewRepository.save(
+                Review.builder()
+                .name(review.getName())
+                .score(review.getScore())
+                .description(review.getDescription())
+                .restaurantId(restaurantid)
+                .build()
+        );
     }
 }
