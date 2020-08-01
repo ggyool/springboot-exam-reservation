@@ -43,13 +43,14 @@ class RestaurantServiceTests {
         List<Restaurant> restaurants = new ArrayList<>();
         Restaurant restaurant = Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("bob zip")
                 .address("seoul")
                 .menuItems(new ArrayList<>())
                 .reviews(new ArrayList<>())
                 .build();
         restaurants.add(restaurant);
-        given(restaurantRepository.findAll()).willReturn(restaurants);
+        given(restaurantRepository.findAllByAddressContainingAndCategoryId("seoul", 1L)).willReturn(restaurants);
         given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
     }
 
@@ -81,7 +82,8 @@ class RestaurantServiceTests {
 
     @Test
     public void getRestaurantsWithExisted(){
-        List<Restaurant> restaurants = restaurantService.getRestaurants();
+        String region = "seoul";
+        List<Restaurant> restaurants = restaurantService.getRestaurants(region, 1L);
         Restaurant restaurant = restaurants.get(0);
         assertThat(restaurant.getId()).isEqualTo(1004L);
     }

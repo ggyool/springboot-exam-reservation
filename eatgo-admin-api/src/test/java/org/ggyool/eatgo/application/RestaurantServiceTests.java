@@ -97,7 +97,7 @@ class RestaurantServiceTests {
                 .address("seoul")
                 .build();
         given(restaurantRepository.findById(1004L)).willReturn(Optional.of(restaurant));
-        Restaurant updated = restaurantService.updateRestaurant(1004L, "bab zip", "busan");
+        Restaurant updated = restaurantService.updateRestaurant(1004L, "bab zip", "busan", 1L);
         assertThat(restaurant.getName()).isEqualTo("bab zip");
         assertThat(restaurant.getAddress()).isEqualTo("busan");
         assertThat(restaurant).isEqualTo(updated);

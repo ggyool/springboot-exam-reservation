@@ -35,6 +35,7 @@ class RestaurantControllerTests {
     public void list() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
         Restaurant restaurant = Restaurant.builder()
+                .categoryId(1L)
                 .id(1004L)
                 .name("bob zip")
                 .address("seoul")
@@ -46,7 +47,9 @@ class RestaurantControllerTests {
                 .andExpect(content().string(
                         containsString("\"id\":1004")))
                 .andExpect(content().string(
-                        containsString("\"name\":\"bob zip\"")));
+                        containsString("\"name\":\"bob zip\"")))
+                .andExpect(content().string(
+                        containsString("\"categoryId\":1")));
     }
 
     @Test
@@ -91,7 +94,7 @@ class RestaurantControllerTests {
         });
         mvc.perform(post("/restaurants")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"br\", \"address\":\"seoul\"}"))
+                .content("{\"name\":\"br\", \"address\":\"seoul\", \"categoryId\":\"1\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("location", "/restaurants/1234"))
                 .andExpect(content().string("{}"));
@@ -105,14 +108,15 @@ class RestaurantControllerTests {
                 .content("{\"name\":\"\", \"address\":\"\"}"))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     public void updateWithValidData() throws Exception {
         mvc.perform(patch("/restaurants/1004")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"bob zip\", \"address\":\"busan\"}"))
+                .content("{\"name\":\"bob zip\", \"address\":\"busan\", \"categoryId\":\"1\"}"))
                 .andExpect(status().isOk());
 
-        verify(restaurantService).updateRestaurant(1004L, "bob zip", "busan");
+        verify(restaurantService).updateRestaurant(1004L, "bob zip", "busan", 1L);
     }
     @Test
     public void updateWithInvalidData() throws Exception {

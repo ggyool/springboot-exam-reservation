@@ -40,7 +40,7 @@ public class RestaurantController {
     @PatchMapping("/restaurants/{id}")
     public String update(@PathVariable("id") Long id,
                          @Valid @RequestBody Restaurant resource){
-        restaurantService.updateRestaurant(id, resource.getName(), resource.getAddress());
+        restaurantService.updateRestaurant(id, resource.getName(), resource.getAddress(), resource.getCategoryId());
         return "";
     }
 

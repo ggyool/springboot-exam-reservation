@@ -39,23 +39,27 @@ class RestaurantControllerTests {
         List<Restaurant> restaurants = new ArrayList<>();
         Restaurant restaurant = Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("bob zip")
                 .address("seoul")
                 .build();
         restaurants.add(restaurant);
-        given(restaurantService.getRestaurants()).willReturn(restaurants);
-        mvc.perform(get("/restaurants"))
+        given(restaurantService.getRestaurants("seoul", 1L)).willReturn(restaurants);
+        mvc.perform(get("/restaurants?region=seoul&categoryId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"id\":1004")))
                 .andExpect(content().string(
-                        containsString("\"name\":\"bob zip\"")));
+                        containsString("\"name\":\"bob zip\"")))
+                .andExpect(content().string(
+                        containsString("\"categoryId\":1")));;
     }
 
     @Test
     public void detailWithExisted() throws Exception {
         Restaurant restaurant = Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("bob zip")
                 .address("seoul")
                 .menuItems(new ArrayList<>(Arrays.asList(MenuItem.builder().name("kimchi").build())))

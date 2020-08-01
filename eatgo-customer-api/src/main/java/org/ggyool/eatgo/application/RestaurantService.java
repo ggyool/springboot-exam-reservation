@@ -4,7 +4,6 @@ import org.ggyool.eatgo.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -31,8 +30,8 @@ public class RestaurantService {
         return restaurant;
     }
 
-    public List<Restaurant> getRestaurants(){
-        return restaurantRepository.findAll();
+    public List<Restaurant> getRestaurants(String region, Long categoryId){
+        return restaurantRepository.findAllByAddressContainingAndCategoryId(region, categoryId);
     }
 
 }

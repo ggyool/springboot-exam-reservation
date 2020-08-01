@@ -32,9 +32,9 @@ public class RestaurantService {
     }
 
     @Transactional
-    public Restaurant updateRestaurant(Long id, String name, String address) {
+    public Restaurant updateRestaurant(Long id, String name, String address, Long categoryId) {
         Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
-        restaurant.updateInformation(name, address);
+        restaurant.updateInformation(name, address, categoryId);
         return restaurant;
     }
 }
